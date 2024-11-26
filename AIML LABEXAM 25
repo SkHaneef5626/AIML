@@ -1,0 +1,322 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "authorship_tag": "ABX9TyMkSyhpULxw5ujXC9TZXaZ6",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/SkHaneef5626/AIML/blob/main/AIML%20LABEXAM%2025\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Prediction of South Indian travel Destinations using Holiday Data\n",
+        "\n",
+        "1. Identify the top 5 attributes for south India destinations\n",
+        "\n",
+        "2. Identify the attribute with most liked travel spots\n",
+        "\n",
+        "3. Find the max and min attributes of choice for south India tourism\n",
+        "\n",
+        "\n",
+        "4. What is the role of beaches, theatres, malls, parks in south India tourism\n",
+        "\n",
+        "\n",
+        "\n",
+        "5. Identify the sports with most attributes in south India\n",
+        "\n",
+        "6. Apply either Classification Model or Clustering Model to evaluate the dataset"
+      ],
+      "metadata": {
+        "id": "ww0lvFtj-h6y"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import pandas as pd\n",
+        "\n",
+        "# Sample DataFrame\n",
+        "data = {\n",
+        "    'Destination': ['Kochi', 'Chennai', 'Ooty', 'Pondicherry', 'Madurai', 'Mysore', 'Kovalam', 'Bangalore'],\n",
+        "    'Attributes': [\n",
+        "        ['Beaches', 'Temples', 'Parks'],\n",
+        "        ['Beaches', 'Malls', 'Parks'],\n",
+        "        ['Temples', 'Mountains', 'Parks'],\n",
+        "        ['Beaches', 'Cultural Heritage'],\n",
+        "        ['Temples', 'Cultural Heritage', 'Parks'],\n",
+        "        ['Cultural Heritage', 'Parks'],\n",
+        "        ['Beaches', 'Parks', 'Water Sports'],\n",
+        "        ['Malls', 'Parks', 'Cultural Heritage']\n",
+        "    ]\n",
+        "}\n",
+        "\n",
+        "df = pd.DataFrame(data)\n",
+        "\n",
+        "# Flatten the 'Attributes' list and count frequency\n",
+        "attributes = df['Attributes'].explode().value_counts()\n",
+        "top_5_attributes = attributes.head(5)\n",
+        "print(\"Top 5 Attributes:\")\n",
+        "print(top_5_attributes)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "dyGgxfLL-zBC",
+        "outputId": "7f24cc77-40b6-48be-bf31-d8e14d2917f2"
+      },
+      "execution_count": 2,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Top 5 Attributes:\n",
+            "Attributes\n",
+            "Parks                7\n",
+            "Beaches              4\n",
+            "Cultural Heritage    4\n",
+            "Temples              3\n",
+            "Malls                2\n",
+            "Name: count, dtype: int64\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Add Rating to the dataframe (assuming ratings exist for each destination)\n",
+        "df['Rating'] = [4.5, 4.7, 4.3, 4.6, 4.8, 4.4, 4.7, 4.2]\n",
+        "\n",
+        "# Exploding attributes for each destination\n",
+        "df_exploded = df.explode('Attributes')\n",
+        "\n",
+        "# Calculate the average rating per attribute\n",
+        "avg_rating_per_attribute = df_exploded.groupby('Attributes')['Rating'].mean().sort_values(ascending=False)\n",
+        "most_liked_attribute = avg_rating_per_attribute.head(1)\n",
+        "print(\"Most Liked Attribute:\")\n",
+        "print(most_liked_attribute)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "bvzK4aXP_gdx",
+        "outputId": "56955852-39de-4120-e270-7896a6221423"
+      },
+      "execution_count": 3,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Most Liked Attribute:\n",
+            "Attributes\n",
+            "Water Sports    4.7\n",
+            "Name: Rating, dtype: float64\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Count how many times each attribute appears\n",
+        "attribute_counts = df['Attributes'].explode().value_counts()\n",
+        "\n",
+        "# Max and Min attributes\n",
+        "max_attribute = attribute_counts.idxmax()\n",
+        "min_attribute = attribute_counts.idxmin()\n",
+        "\n",
+        "print(\"Max Attribute of Choice:\", max_attribute)\n",
+        "print(\"Min Attribute of Choice:\", min_attribute)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "_nZN5Rxv_RZE",
+        "outputId": "8c0937d8-a53c-4be2-97ad-30ac82dd3479"
+      },
+      "execution_count": 4,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Max Attribute of Choice: Parks\n",
+            "Min Attribute of Choice: Mountains\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Checking which destinations have these attributes\n",
+        "beaches_role = df[df['Attributes'].apply(lambda x: 'Beaches' in x)]\n",
+        "theatres_role = df[df['Attributes'].apply(lambda x: 'Theatres' in x)]\n",
+        "malls_role = df[df['Attributes'].apply(lambda x: 'Malls' in x)]\n",
+        "parks_role = df[df['Attributes'].apply(lambda x: 'Parks' in x)]\n",
+        "\n",
+        "# Display the role of each factor\n",
+        "print(\"Destinations with Beaches:\")\n",
+        "print(beaches_role['Destination'])\n",
+        "print(\"\\nDestinations with Theatres:\")\n",
+        "print(theatres_role['Destination'])\n",
+        "print(\"\\nDestinations with Malls:\")\n",
+        "print(malls_role['Destination'])\n",
+        "print(\"\\nDestinations with Parks:\")\n",
+        "print(parks_role['Destination'])"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "Bvm4RSU3_qDY",
+        "outputId": "e5e10f49-1dbc-4903-acaf-af2f8baa66f9"
+      },
+      "execution_count": 5,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Destinations with Beaches:\n",
+            "0          Kochi\n",
+            "1        Chennai\n",
+            "3    Pondicherry\n",
+            "6        Kovalam\n",
+            "Name: Destination, dtype: object\n",
+            "\n",
+            "Destinations with Theatres:\n",
+            "Series([], Name: Destination, dtype: object)\n",
+            "\n",
+            "Destinations with Malls:\n",
+            "1      Chennai\n",
+            "7    Bangalore\n",
+            "Name: Destination, dtype: object\n",
+            "\n",
+            "Destinations with Parks:\n",
+            "0        Kochi\n",
+            "1      Chennai\n",
+            "2         Ooty\n",
+            "4      Madurai\n",
+            "5       Mysore\n",
+            "6      Kovalam\n",
+            "7    Bangalore\n",
+            "Name: Destination, dtype: object\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Example sports-related attributes in the dataset\n",
+        "df['Attributes'] = df['Attributes'].apply(lambda x: x + ['Cricket', 'Football', 'Water Sports'])  # Adding sports for demonstration\n",
+        "\n",
+        "# Flatten the list and count the frequency of sports\n",
+        "sports = df['Attributes'].explode().value_counts()\n",
+        "\n",
+        "# Identify sports with the most associated attributes\n",
+        "sports_with_most_attributes = sports.head(5)\n",
+        "print(\"Sports with Most Attributes:\")\n",
+        "print(sports_with_most_attributes)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "dZtVcOnd_y0L",
+        "outputId": "f97a6d39-715a-4182-d2a5-9892ad018989"
+      },
+      "execution_count": 6,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Sports with Most Attributes:\n",
+            "Attributes\n",
+            "Water Sports    9\n",
+            "Cricket         8\n",
+            "Football        8\n",
+            "Parks           7\n",
+            "Beaches         4\n",
+            "Name: count, dtype: int64\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "from sklearn.feature_extraction.text import TfidfVectorizer\n",
+        "from sklearn.cluster import KMeans\n",
+        "\n",
+        "# Create a list of attributes as strings for vectorization\n",
+        "df['Attributes_Str'] = df['Attributes'].apply(lambda x: ' '.join(x))\n",
+        "\n",
+        "# Use TF-IDF Vectorizer to transform the attribute data\n",
+        "vectorizer = TfidfVectorizer(stop_words='english')\n",
+        "X = vectorizer.fit_transform(df['Attributes_Str'])\n",
+        "\n",
+        "# Apply KMeans clustering to group destinations\n",
+        "kmeans = KMeans(n_clusters=3, random_state=42)  # Assuming 3 clusters\n",
+        "df['Cluster'] = kmeans.fit_predict(X)\n",
+        "\n",
+        "# Display the clusters\n",
+        "print(\"Clustering Results:\")\n",
+        "print(df[['Destination', 'Cluster']])"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "5ImlVYVG_1f7",
+        "outputId": "439d64a7-d416-41c0-cb14-6ae9d31d6811"
+      },
+      "execution_count": 7,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Clustering Results:\n",
+            "   Destination  Cluster\n",
+            "0        Kochi        2\n",
+            "1      Chennai        2\n",
+            "2         Ooty        0\n",
+            "3  Pondicherry        1\n",
+            "4      Madurai        1\n",
+            "5       Mysore        1\n",
+            "6      Kovalam        2\n",
+            "7    Bangalore        1\n"
+          ]
+        }
+      ]
+    }
+  ]
+}
